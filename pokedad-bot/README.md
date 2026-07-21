@@ -22,6 +22,8 @@ npm run start -w @pokedad-radar/bot
 
 Health: `http://127.0.0.1:3456/health`
 
+The main Fastify API exposes authenticated `/bot/status` and `/bot/mock-scan` routes. The Store Adapters page uses these routes; browsers never connect directly to Redis.
+
 ## Optional Webshare proxy
 
 Copy a Webshare list into `proxies.txt`, enable `OUTBOUND_PROXY_ENABLED`, and run:
