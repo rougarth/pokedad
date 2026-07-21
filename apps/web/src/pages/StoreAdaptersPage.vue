@@ -11,6 +11,7 @@ const bestBuySafety = computed(() => radar.storeSafetyMatrix.find((store) => sto
 
 onMounted(() => {
   radar.loadAdapters().catch(() => undefined);
+  radar.loadSafeBotStatus().catch(() => undefined);
   radar.loadBestBuyScan().catch(() => undefined);
   radar.loadStoreSafetyMatrix().catch(() => undefined);
 });
@@ -18,6 +19,28 @@ onMounted(() => {
 
 <template>
   <div class="space-y-6">
+    <section class="rounded border border-radar-line bg-white p-5 shadow-soft">
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 class="text-base font-semibold">PokeDad Safe Bot Worker</h2>
+          <p class="mt-1 text-sm text-slate-600">Integrated through authenticated API and Redis. Mock/manual only for stores without approved APIs.</p>
+        </div>
+        <StatusBadge :label="radar.safeBotStatus.connected ? radar.safeBotStatus.status : 'UNAVAILABLE'" :tone="radar.safeBotStatus.connected ? 'green' : 'red'" />
+      </div>
+      <div class="mt-4 grid gap-3 md:grid-cols-[1fr_1fr_auto_auto]">
+        <label class="text-xs font-semibold uppercase text-slate-500">Store
+          <select v-model="radar.safeBotStore" class="mt-2 w-full rounded border border-radar-line bg-white px-3 py-2 text-sm">
+            <option value="best-buy">Best Buy</option><option value="target">Target</option><option value="walmart">Walmart</option><option value="pokemon-center">Pokemon Center</option><option value="gamestop">GameStop</option><option value="amazon">Amazon</option><option value="costco">Costco</option><option value="sams-club">Sam's Club</option><option value="bjs">BJ's</option>
+          </select>
+        </label>
+        <label class="text-xs font-semibold uppercase text-slate-500">SKU / reference
+          <input v-model="radar.safeBotSku" class="mt-2 w-full rounded border border-radar-line px-3 py-2 text-sm" maxlength="100" />
+        </label>
+        <button class="self-end rounded border border-radar-line px-3 py-2 text-sm font-semibold" type="button" @click="radar.loadSafeBotStatus()">Check Status</button>
+        <button class="flex self-end items-center gap-2 rounded bg-radar-teal px-3 py-2 text-sm font-semibold text-white disabled:opacity-50" :disabled="!radar.safeBotStatus.connected" type="button" @click="radar.runSafeBotMockScan()"><FlaskConical class="size-4" /> Run Mock</button>
+      </div>
+      <p class="mt-3 rounded border border-radar-line bg-radar-panel p-3 text-sm text-slate-700">{{ radar.safeBotStatus.message ?? 'No retailer request is made by this worker.' }}</p>
+    </section>
     <section class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
       <div class="rounded border border-radar-line bg-white p-5 shadow-soft">
         <div class="flex flex-wrap items-start justify-between gap-3">

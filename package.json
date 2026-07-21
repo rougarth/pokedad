@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "dev:api": "npm run dev -w @pokedad-radar/api",
+    "dev:bot": "npm run start -w @pokedad-radar/bot",
     "dev:web": "npm run dev -w @pokedad-radar/web",
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",

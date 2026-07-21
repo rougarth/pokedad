@@ -84,6 +84,14 @@ export interface AdapterProduct {
   pickupAvailable?: boolean | null;
 }
 
+export interface SafeBotStatus {
+  connected: boolean;
+  status: string;
+  message?: string;
+  lastMockStore?: string;
+  lastMockAt?: string;
+}
+
 export type BestBuyScanStatus = "IDLE" | "CONFIGURATION_NEEDED" | "APPROVAL_PENDING" | "RUNNING" | "SUCCEEDED" | "FAILED" | "RATE_LIMITED" | "DISABLED";
 
 export interface BestBuyScanConfig {
@@ -521,6 +529,9 @@ export const useRadarStore = defineStore("radar", {
     adapterLastMessage: "",
     adapterLookupSku: "",
     adapterQuery: "pokemon tcg",
+    safeBotStatus: { connected: false, status: "UNAVAILABLE" } as SafeBotStatus,
+    safeBotStore: "walmart",
+    safeBotSku: "demo",
     bestBuyScanConfig: { ...defaultBestBuyScanConfig } as BestBuyScanConfig,
     bestBuyScanStatus: { ...defaultBestBuyScanState } as BestBuyScanState,
     bestBuySchedulerState: { ...defaultBestBuySchedulerState } as BestBuySchedulerState,
@@ -1008,6 +1019,30 @@ export const useRadarStore = defineStore("radar", {
     async loadAdapters() {
       const response = await api<{ adapters: AdapterStatus[] }>("/adapters");
       this.adapters = response.adapters;
+    },
+    async loadSafeBotStatus() {
+      const response = await apiWithBody<{ connected: boolean; result?: { status: string }; error?: string }>("/bot/status");
+      this.safeBotStatus = {
+        connected: response.ok && response.body.connected,
+        status: response.body.result?.status ?? "UNAVAILABLE",
+        message: response.body.error
+      };
+      return this.safeBotStatus;
+    },
+    async runSafeBotMockScan() {
+      const response = await apiWithBody<{ connected: boolean; result?: { status: string; store?: string; mock?: boolean; message?: string; timestamp?: string }; error?: string }>("/bot/mock-scan", {
+        method: "POST",
+        body: JSON.stringify({ store: this.safeBotStore, sku: this.safeBotSku || "demo" })
+      });
+      this.safeBotStatus = {
+        connected: response.ok && response.body.connected,
+        status: response.body.result?.status ?? "UNAVAILABLE",
+        message: response.body.result?.message ?? response.body.error,
+        lastMockStore: response.body.result?.store,
+        lastMockAt: response.body.result?.timestamp
+      };
+      if (!response.ok) throw new Error(response.body.error ?? "Safe bot worker is unavailable.");
+      return response.body.result;
     },
     async loadBestBuyScan() {
       const response = await api<{ config: BestBuyScanConfig; scanStatus: BestBuyScanState; schedulerState: BestBuySchedulerState }>("/adapters/best-buy/scan-status");

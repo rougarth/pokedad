@@ -49,6 +49,27 @@ services:
       timeout: 5s
       retries: 5
 
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.bot
+    restart: unless-stopped
+    environment:
+      REDIS_URL: redis://redis:6379
+      OUTBOUND_PROXY_ENABLED: "true"
+      OUTBOUND_PROXY_FILE: /run/secrets/webshare-proxies.txt
+      BEST_BUY_API_KEY_CONFIGURED: ${BOT_BEST_BUY_API_KEY_CONFIGURED:-false}
+    volumes:
+      - ./pokedad-bot/proxies.txt:/run/secrets/webshare-proxies.txt:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3456/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
   web:
     build:
       context: .
@@ -58,6 +79,8 @@ services:
     restart: unless-stopped
     depends_on:
       api:
+        condition: service_healthy
+      bot:
         condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ >/dev/null || exit 1"]

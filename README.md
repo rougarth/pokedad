@@ -473,6 +473,17 @@ The Chrome helper supports explicit, preview-before-save product signal capture 
 
 This is not a crawler: there is no background polling, scheduled retailer request, browser navigation, login/session collection, CAPTCHA or queue bypass, cart, checkout, or purchase automation. See `docs/phase-25-local-real-signals.md`.
 
+## Integrated Safe Bot Worker
+
+`pokedad-bot` runs alongside the API, dashboard, PostgreSQL, and Redis. The authenticated Store Adapters page can check worker status and run clearly labeled mock scans through `/bot/status` and `/bot/mock-scan`.
+
+```powershell
+npm run dev:bot
+npm run proxy:check -w @pokedad-radar/bot
+```
+
+`Dockerfile.bot` builds the home-server worker. The Webshare list is mounted from the ignored local file `pokedad-bot/proxies.txt`; it is never copied into an image or committed. Best Buy live scans remain in the official API readiness flow, and research-only stores remain mock/manual.
+
 ## Safety Rules
 
 - Do not store retailer credentials, cookies, session tokens, card numbers, CVV, or full payment data.

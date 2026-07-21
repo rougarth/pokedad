@@ -17,6 +17,22 @@ services:
     volumes:
       - pokedad_redis:/data
 
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.bot
+    restart: unless-stopped
+    environment:
+      REDIS_URL: redis://redis:6379
+      OUTBOUND_PROXY_ENABLED: "true"
+      OUTBOUND_PROXY_FILE: /run/secrets/webshare-proxies.txt
+    volumes:
+      - ./pokedad-bot/proxies.txt:/run/secrets/webshare-proxies.txt:ro
+    depends_on:
+      - redis
+    ports:
+      - "127.0.0.1:3456:3456"
+
 volumes:
   pokedad_postgres:
   pokedad_redis:

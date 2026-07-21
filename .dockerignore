@@ -15,4 +15,6 @@ apps/web/.env
 apps/web/.env.*
 !apps/web/*.example
 backups
+pokedad-bot/proxies.txt
+pokedad-bot/legacy-disabled
 *.log

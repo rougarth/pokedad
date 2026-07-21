@@ -10,6 +10,7 @@ import { registerAlertRoutes } from "./modules/alerts/routes.js";
 import { registerAnalyticsRoutes } from "./modules/analytics/routes.js";
 import { registerAuthGuard } from "./modules/auth/auth.guard.js";
 import { registerAuthRoutes } from "./modules/auth/routes.js";
+import { registerBotRoutes } from "./modules/bot/routes.js";
 import { registerDemoRoutes } from "./modules/demo/routes.js";
 import { registerDiscordRoutes } from "./modules/discord/routes.js";
 import { registerHealthRoutes } from "./modules/health/routes.js";
@@ -75,6 +76,7 @@ export async function buildApp() {
   await registerAuthGuard(app);
   await registerHealthRoutes(app);
   await registerAuthRoutes(app);
+  await registerBotRoutes(app);
   await registerAnalyticsRoutes(app);
   await registerAdapterRoutes(app);
   await registerAlertRoutes(app);
