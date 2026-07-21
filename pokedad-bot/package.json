@@ -1,0 +1,15 @@
+{
+  "name": "@pokedad-radar/bot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "typecheck": "node --check src/index.js && node --check src/config.js",
+    "build": "npm run typecheck"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ioredis": "^5.4.1"
+  }
+}

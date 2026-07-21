@@ -17,7 +17,8 @@
   },
   "workspaces": [
     "packages/*",
-    "apps/*"
+    "apps/*",
+    "pokedad-bot"
   ],
   "engines": {
     "node": ">=20"

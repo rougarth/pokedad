@@ -11,6 +11,7 @@ dist/
 !apps/web/.env.ngrok.example
 coverage/
 backups/
+pokedad-bot/legacy-disabled/
 *.log
 .DS_Store
 apps/web/.vite/
