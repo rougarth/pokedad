@@ -21,3 +21,13 @@ npm run start -w @pokedad-radar/bot
 ```
 
 Health: `http://127.0.0.1:3456/health`
+
+## Optional Webshare proxy
+
+Copy a Webshare list into `proxies.txt`, enable `OUTBOUND_PROXY_ENABLED`, and run:
+
+```powershell
+npm run proxy:check -w @pokedad-radar/bot
+```
+
+The check never prints proxy addresses, credentials, or the observed IP. Proxies are available only for explicitly approved API egress; they are not used for anti-bot evasion, CAPTCHA bypass, scraping, carts, or checkout.

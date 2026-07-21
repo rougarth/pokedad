@@ -12,6 +12,7 @@ dist/
 coverage/
 backups/
 pokedad-bot/legacy-disabled/
+pokedad-bot/proxies.txt
 *.log
 .DS_Store
 apps/web/.vite/

@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "typecheck": "node --check src/index.js && node --check src/config.js",
+    "proxy:check": "node src/proxy-check.js",
+    "typecheck": "node --check src/index.js && node --check src/config.js && node --check src/proxy.js && node --check src/proxy-check.js",
     "build": "npm run typecheck"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
-    "ioredis": "^5.4.1"
+    "ioredis": "^5.4.1",
+    "undici": "^7.16.0"
   }
 }
