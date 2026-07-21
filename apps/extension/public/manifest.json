@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "PokeDad Radar Helper",
+  "version": "0.1.0",
+  "description": "Private, user-triggered product signal capture for approved manual retailer pages.",
+  "permissions": ["activeTab", "storage", "notifications"],
+  "host_permissions": [
+    "http://127.0.0.1:4000/*",
+    "http://localhost:4000/*",
+    "https://flavored-flint-hardcore.ngrok-free.dev/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.bjs.com/*",
+        "https://*.costco.com/*",
+        "https://*.samsclub.com/*",
+        "https://*.walmart.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+FROM node:20-bookworm-slim AS build
+
+WORKDIR /app
+
+RUN apt-get update -y \
+  && apt-get install -y --no-install-recommends openssl \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY package*.json ./
+COPY apps/api/package.json apps/api/package.json
+COPY apps/web/package.json apps/web/package.json
+COPY packages/shared/package.json packages/shared/package.json
+
+RUN npm ci
+
+COPY . .
+
+RUN npm run prisma:generate \
+  && npm run build -w @pokedad-radar/shared \
+  && npm run build -w @pokedad-radar/api
+
+WORKDIR /app/apps/api
+
+ENV NODE_ENV=production
+EXPOSE 4000
+
+CMD ["node", "dist/main.js"]

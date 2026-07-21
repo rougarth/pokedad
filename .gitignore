@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+!.env.home-server.example
+!.env.ngrok.example
+!apps/api/.env.home-server.example
+!apps/api/.env.ngrok.example
+!apps/web/.env.home-server.example
+!apps/web/.env.ngrok.example
+coverage/
+backups/
+*.log
+.DS_Store
+apps/web/.vite/
+apps/extension/dist/

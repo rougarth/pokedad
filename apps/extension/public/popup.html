@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PokeDad Radar Capture</title>
+  <style>
+    body { width: 340px; margin: 0; font: 13px Inter, system-ui, sans-serif; color: #17201a; background: #f7f8f3; }
+    main { padding: 16px; }
+    h1 { margin: 0 0 8px; font-size: 17px; }
+    p { color: #526056; line-height: 1.4; }
+    label { display: block; margin-top: 10px; font-weight: 600; }
+    input { box-sizing: border-box; width: 100%; height: 34px; margin-top: 4px; border: 1px solid #cfd7cc; padding: 6px; }
+    button { width: 100%; min-height: 36px; margin-top: 8px; border: 1px solid #cfd7cc; background: white; font-weight: 700; cursor: pointer; }
+    button:disabled { opacity: .5; cursor: default; }
+    .primary { background: #176b3a; color: white; border-color: #176b3a; }
+    .status, pre { border: 1px solid #dfe5da; background: white; padding: 10px; white-space: pre-wrap; }
+    .safety { font-size: 12px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Real Page Signal</h1>
+  <p>BJ's, Costco, Sam's Club, or Walmart. Capture occurs only after your click on the page already open.</p>
+  <div class="status"><p id="status">Ready.</p></div>
+  <button id="capture" class="primary" type="button">Capture Current Page</button>
+  <pre id="preview">No preview yet.</pre>
+  <button id="save" type="button" disabled>Save Signal</button>
+  <details>
+    <summary>Connection settings</summary>
+    <label>API URL<input id="api-base-url" type="url" /></label>
+    <label>Helper token<input id="helper-token" type="password" autocomplete="off" /></label>
+    <button id="save-settings" type="button">Save Settings</button>
+  </details>
+  <p class="safety">Stops on CAPTCHA, queue, human verification, or login challenge. No cart, checkout, or background crawling.</p>
+</main>
+<script type="module" src="popup.js"></script>
+</body>
+</html>

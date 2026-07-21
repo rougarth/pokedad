@@ -1,0 +1,25 @@
+{
+  "name": "poke-dad-radar",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Private Pokemon TCG restock dashboard and human-in-the-loop cart assist.",
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "dev:api": "npm run dev -w @pokedad-radar/api",
+    "dev:web": "npm run dev -w @pokedad-radar/web",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "prisma:generate": "npm run prisma:generate -w @pokedad-radar/api",
+    "db:seed": "npm run db:seed -w @pokedad-radar/api",
+    "db:migrate": "npm run db:migrate -w @pokedad-radar/api",
+    "db:deploy": "npm run db:deploy -w @pokedad-radar/api",
+    "security:check": "node scripts/security-check.mjs"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,904 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum StoreSessionState {
+  LOGGED_IN
+  NOT_LOGGED_IN
+  LOGIN_EXPIRED
+  HUMAN_CHECK_NEEDED
+  QUEUE_OR_WAITING_ROOM
+  QUEUE_DETECTED
+  CAPTCHA_DETECTED
+  UNKNOWN
+}
+
+enum ProductCategoryKind {
+  ELITE_TRAINER_BOX
+  POKEMON_CENTER_ETB
+  BOOSTER_BUNDLE
+  BOOSTER_BOX
+  COLLECTION_BOX
+  PREMIUM_COLLECTION
+  ULTRA_PREMIUM_COLLECTION
+  MINI_TIN
+  TIN
+  SLEEVED_BOOSTER
+  NEW_RELEASE
+}
+
+enum SellerPolicy {
+  OFFICIAL_ONLY
+  APPROVED_SELLERS_ONLY
+  MANUAL_REVIEW
+}
+
+enum FulfillmentPreference {
+  SHIPPING
+  PICKUP
+  EITHER
+}
+
+enum StockStatus {
+  IN_STOCK
+  OUT_OF_STOCK
+  PREORDER
+  BACKORDER
+  UNKNOWN
+}
+
+enum CartAssistStatus {
+  NOT_ATTEMPTED
+  PRODUCT_FOUND
+  PRICE_ACCEPTED
+  ADD_TO_CART_ATTEMPTED
+  CART_READY
+  LOGIN_REQUIRED
+  HUMAN_CHECK_REQUIRED
+  QUEUE_DETECTED
+  CAPTCHA_DETECTED
+  SOLD_OUT
+  PRICE_CHANGED
+  FAILED
+  SKIPPED
+}
+
+enum CartAssistMode {
+  OPEN_ONLY
+  LOCAL_HELPER_READY
+  DISABLED
+}
+
+enum PriceStatus {
+  ACCEPTED
+  MSRP_MATCH
+  ACCEPTED_MARKUP
+  OVER_LIMIT
+  THIRD_PARTY_SKIPPED
+  UNKNOWN_MSRP
+}
+
+enum AlertChannelType {
+  TELEGRAM
+  DISCORD_WEBHOOK
+  SMS
+  EMAIL
+  BROWSER
+}
+
+enum AlertEventType {
+  MSRP_FOUND
+  ACCEPTABLE_PRICE_FOUND
+  CART_READY
+  HUMAN_ACTION_NEEDED
+  LOGIN_EXPIRED
+  PRICE_CHANGED
+  SOLD_OUT
+  ERROR
+  RELEASE_REMINDER
+}
+
+enum AlertEventStatus {
+  PENDING
+  SENT
+  FAILED
+  SUPPRESSED
+}
+
+enum AlertDeliveryStatus {
+  PENDING
+  SENT
+  FAILED
+  SUPPRESSED
+  CHANNEL_DISABLED
+  CONFIGURATION_NEEDED
+}
+
+enum AlertPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum WishlistPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+  IGNORE
+}
+
+enum WishlistAlertBehavior {
+  ALERT_IMMEDIATELY
+  DASHBOARD_ONLY
+  DO_NOT_ALERT
+  REVIEW_FIRST
+}
+
+enum ManualStoreLinkType {
+  PRODUCT
+  SEARCH
+  CATEGORY
+  RELEASE_PAGE
+  STORE_HOME
+  CUSTOM
+}
+
+enum AlertTemplateType {
+  ACCEPTED_PRICE_FOUND
+  MSRP_MATCH_FOUND
+  PRICE_DROPPED_ACCEPTED
+  UNKNOWN_MSRP_MAPPING
+  HUMAN_REVIEW_NEEDED
+  SCAN_FAILED
+  CONFIGURATION_NEEDED
+  TEST_ALERT
+  RELEASE_REMINDER
+  TEST_RELEASE_REMINDER
+}
+
+enum ReleaseCalendarStatus {
+  PLANNED
+  UPCOMING
+  RELEASED
+  WATCHING
+  BOUGHT
+  SKIPPED
+  CANCELED
+}
+
+enum ReleaseReminderOffset {
+  SEVEN_DAYS
+  THREE_DAYS
+  ONE_DAY
+  TWELVE_HOURS
+  ONE_HOUR
+  AT_RELEASE
+}
+
+enum TodayActionStatus {
+  OPEN
+  IN_PROGRESS
+  DONE
+  SNOOZED
+  DISMISSED
+}
+
+enum PurchaseDecisionStatus {
+  NEW
+  OPENED
+  BOUGHT
+  SKIPPED
+  SNOOZED
+  SOLD_OUT
+  TOO_EXPENSIVE
+  NOT_INTERESTED
+  NEEDS_MAPPING
+}
+
+enum PurchaseSkipReason {
+  PRICE_TOO_HIGH
+  SOLD_OUT
+  NOT_INTERESTED
+  WRONG_PRODUCT
+  ALREADY_BOUGHT
+  NEEDS_REVIEW
+  OTHER
+}
+
+enum LiveAlertStatus {
+  NOT_SENT
+  READY
+  SENT
+  FAILED
+  SUPPRESSED
+}
+
+enum AuditAction {
+  LOGIN_SUCCESS
+  LOGIN_FAILURE
+  LOGOUT
+  PASSWORD_CHANGED
+  STORE_UPDATED
+  WATCH_RULE_UPDATED
+  PRICE_RULE_UPDATED
+  ALERT_CHANNEL_UPDATED
+  ALERT_SENT
+  CART_ASSIST_REQUESTED
+  CART_ASSIST_STOPPED
+  LIVE_FIND_IGNORED
+  LIVE_FIND_MARKED_BOUGHT
+  LIVE_FIND_SNOOZED
+  CART_QUEUE_RETRY_REQUESTED
+  ALERT_TEST_SENT
+  ADAPTER_STATUS_CHECKED
+  ADAPTER_TEST_SEARCH_RUN
+  ADAPTER_LOOKUP_RUN
+  BEST_BUY_SCAN_RUN
+  ADAPTER_MISSING_API_KEY
+  ADAPTER_ERROR
+  BEST_BUY_SCAN_STARTED
+  BEST_BUY_SCAN_SUCCEEDED
+  BEST_BUY_SCAN_FAILED
+  BEST_BUY_SCAN_API_KEY_MISSING
+  BEST_BUY_SCAN_RATE_LIMITED
+  BEST_BUY_SCAN_ENABLED
+  BEST_BUY_SCAN_DISABLED
+  BEST_BUY_RESULT_ACCEPTED
+  BEST_BUY_RESULT_OVER_LIMIT
+  BEST_BUY_ALERT_CREATED
+  BEST_BUY_DUPLICATE_ALERT_SUPPRESSED
+  MSRP_MAPPING_CANDIDATE_CREATED
+  MSRP_SUGGESTION_GENERATED
+  MSRP_MAPPING_ACCEPTED
+  MSRP_MAPPING_CHANGED
+  MSRP_MAPPING_IGNORED
+  MSRP_MAPPING_MARKED_NEEDS_REVIEW
+  MSRP_PRICE_RECALCULATED
+  MSRP_MAPPING_ALERT_CREATED
+  MSRP_MAPPING_DUPLICATE_ALERT_SUPPRESSED
+  ALERT_CHANNEL_CREATED
+  ALERT_CHANNEL_DELETED
+  ALERT_CHANNEL_ENABLED
+  ALERT_CHANNEL_DISABLED
+  ALERT_CHANNEL_TEST_FAILED
+  ALERT_EVENT_DELIVERED
+  ALERT_DELIVERY_FAILED
+  ALERT_DELIVERY_SUPPRESSED
+  ALERT_SECRET_STORED_ENCRYPTED
+  DISCORD_OAUTH_STARTED
+  DISCORD_OAUTH_CALLBACK_SUCCEEDED
+  DISCORD_OAUTH_CALLBACK_FAILED
+  DISCORD_OAUTH_INVALID_STATE
+  DISCORD_OAUTH_CONFIG_MISSING
+  DISCORD_OAUTH_WEBHOOK_STORED_ENCRYPTED
+  DISCORD_OAUTH_TEST_SENT
+  DISCORD_OAUTH_TEST_FAILED
+  DISCORD_OAUTH_DISCONNECTED
+  ALERT_TEMPLATE_PREVIEWED
+  ALERT_PREVIEW_TEST_SENT
+  ALERT_PREVIEW_TEST_FAILED
+  NOTIFICATION_HISTORY_VIEWED
+  ALERT_DELIVERY_DETAIL_VIEWED
+  ALERT_SETTINGS_UPDATED
+  PURCHASE_PRODUCT_OPENED
+  PURCHASE_MARKED_BOUGHT
+  PURCHASE_MARKED_SKIPPED
+  PURCHASE_SNOOZED
+  PURCHASE_UNSNOOZED
+  PURCHASE_NOTE_UPDATED
+  PURCHASE_CHECKLIST_VIEWED
+  PURCHASE_DECISION_CHANGED
+  WISHLIST_ITEM_CREATED
+  WISHLIST_ITEM_UPDATED
+  WISHLIST_ITEM_DELETED
+  WISHLIST_ITEM_ENABLED
+  WISHLIST_ITEM_DISABLED
+  WISHLIST_MATCH_PREVIEW_RUN
+  WISHLIST_PRODUCT_MATCHED
+  WISHLIST_PRODUCT_IGNORED
+  WISHLIST_ALERT_PRIORITY_SET
+  STORE_SAFETY_MATRIX_VIEWED
+  STORE_SAFETY_DETAIL_VIEWED
+  STORE_SAFETY_ITEM_UPDATED
+  BLOCKED_STORE_ADAPTER_ATTEMPTED
+  RESEARCH_ONLY_STORE_SELECTED_IN_WISHLIST
+  MANUAL_STORE_LINK_CREATED
+  MANUAL_STORE_LINK_UPDATED
+  MANUAL_STORE_LINK_DELETED
+  MANUAL_STORE_LINK_ENABLED
+  MANUAL_STORE_LINK_DISABLED
+  MANUAL_STORE_LINK_OPENED
+  MANUAL_STORE_LINK_ATTACHED_TO_WISHLIST
+  RELEASE_CALENDAR_ITEM_CREATED
+  RELEASE_CALENDAR_ITEM_UPDATED
+  RELEASE_CALENDAR_ITEM_DELETED
+  RELEASE_CALENDAR_ITEM_ENABLED
+  RELEASE_CALENDAR_ITEM_DISABLED
+  RELEASE_CALENDAR_MARKED_RELEASED
+  RELEASE_CALENDAR_MARKED_BOUGHT
+  RELEASE_CALENDAR_MARKED_SKIPPED
+  RELEASE_REMINDER_TEST_SENT
+  RELEASE_REMINDER_DELIVERY_FAILED
+  RELEASE_REMINDER_DELIVERED
+  RELEASE_RELATED_MANUAL_LINK_OPENED
+  TODAY_ACTION_LIST_VIEWED
+  TODAY_ACTION_ITEM_DISMISSED
+  TODAY_ACTION_ITEM_SNOOZED
+  TODAY_ACTION_ITEM_MARKED_DONE
+  TODAY_MANUAL_LINK_OPENED
+  TODAY_PURCHASE_DECISION_MADE
+  TODAY_RELEASE_ACTION_TAKEN
+  TODAY_MSRP_MAPPING_OPENED
+  ANALYTICS_DASHBOARD_VIEWED
+  ANALYTICS_FILTER_CHANGED
+  ANALYTICS_EXPORT_DOWNLOADED
+  ANALYTICS_DETAIL_OPENED
+  HELPER_CONNECTED
+  DATA_EXPORTED
+  DATA_DELETED
+}
+
+enum MSRPMappingStatus {
+  UNMAPPED
+  SUGGESTED
+  MAPPED
+  IGNORED
+  NEEDS_REVIEW
+}
+
+enum MSRPMappingConfidence {
+  LOW
+  MEDIUM
+  HIGH
+  MANUAL
+}
+
+enum SkipReason {
+  NONE
+  THIRD_PARTY_SELLER
+  MARKETPLACE_SCALPER
+  USED_OR_OPEN_BOX
+  SINGLES_OR_LOOSE_CARDS
+  PRICE_ABOVE_MAX
+  SUSPICIOUS_LISTING
+  HUMAN_CHECK_REQUIRED
+  QUEUE_DETECTED
+  PURCHASE_LIMIT_MANUAL_DECISION
+  STORE_DISABLED
+}
+
+enum PriceRuleScope {
+  GLOBAL
+  STORE
+  CATEGORY
+  PRODUCT
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  displayName  String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  stores            Store[]
+  productMsrps      ProductMSRP[]
+  watchRules        ProductWatchRule[]
+  priceRules        PriceRule[]
+  alertChannels     AlertChannel[]
+  alertEvents       AlertEvent[]
+  auditLogs         AuditLog[]          @relation("AuditActor")
+  appSettings       AppSetting[]
+    encryptedSecrets  EncryptedSecret[]
+    msrpMappings      ProductMSRPMapping[]
+    purchaseDecisions PurchaseDecision[]
+    wishlistItems     WishlistItem[]
+    manualStoreLinks  ManualStoreLink[]
+    releaseCalendarItems ReleaseCalendarItem[]
+    actionItemStates ActionItemState[]
+  }
+
+model Store {
+  id                    String            @id @default(cuid())
+  ownerId               String
+  name                  String
+  slug                  String
+  baseUrl               String
+  loginUrl              String?
+  cartUrl               String?
+  monitoringEnabled     Boolean           @default(false)
+  cartAssistEnabled     Boolean           @default(false)
+  cartAssistMode        CartAssistMode    @default(OPEN_ONLY)
+  sellerPolicy          SellerPolicy      @default(OFFICIAL_ONLY)
+  defaultToleranceCents Int?
+  adapterSafetyLevel    String            @default("OPEN_ONLY")
+  lastSuccessfulCheckAt DateTime?
+  lastError             String?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  owner          User                 @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  sessionStatus  StoreSessionStatus?
+  retailerProducts RetailerProduct[]
+  stockChecks    StockCheckResult[]
+  priceRules     PriceRule[]
+
+  @@unique([ownerId, slug])
+  @@index([ownerId, monitoringEnabled])
+}
+
+model StoreSessionStatus {
+  id            String            @id @default(cuid())
+  storeId       String            @unique
+  state         StoreSessionState @default(UNKNOWN)
+  checkedAt     DateTime?
+  message       String?
+  helperId      String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+}
+
+model ProductCategory {
+  id          String              @id @default(cuid())
+  kind        ProductCategoryKind @unique
+  label       String
+  description String?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  msrps            ProductMSRP[]
+  watchRules       ProductWatchRule[]
+  retailerProducts RetailerProduct[]
+    priceRules       PriceRule[]
+    suggestedMappings ProductMSRPMapping[] @relation("SuggestedCategory")
+    mappedMappings    ProductMSRPMapping[] @relation("MappedCategory")
+    wishlistItems     WishlistItem[]
+    manualStoreLinks  ManualStoreLink[]
+    releaseCalendarItems ReleaseCalendarItem[]
+  }
+
+  model WishlistItem {
+    id                String                @id @default(cuid())
+    ownerId           String
+    name              String
+    setName           String?
+    categoryId        String?
+    storeKey          String?
+    priority          WishlistPriority      @default(NORMAL)
+    alertBehavior     WishlistAlertBehavior @default(ALERT_IMMEDIATELY)
+    desiredQuantity   Int?
+    maxPriceCents     Int?
+    allowedMarkupCents Int?
+    keywords          String[]
+    isActive          Boolean               @default(true)
+    notes             String?
+    createdAt         DateTime              @default(now())
+    updatedAt         DateTime              @updatedAt
+
+    owner    User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+    category ProductCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+    manualStoreLinks ManualStoreLink[]
+    releaseCalendarItems ReleaseCalendarItem[]
+
+    @@index([ownerId, isActive])
+    @@index([ownerId, priority])
+    @@index([categoryId])
+  }
+
+  model ManualStoreLink {
+    id             String              @id @default(cuid())
+    ownerId        String
+    storeKey       String
+    storeDisplayName String
+    title          String
+    url            String
+    linkType       ManualStoreLinkType @default(SEARCH)
+    priority       WishlistPriority    @default(NORMAL)
+    wishlistItemId String?
+    setName        String?
+    categoryId     String?
+    notes          String?
+    isActive       Boolean             @default(true)
+    lastOpenedAt   DateTime?
+    openCount      Int                 @default(0)
+    createdAt      DateTime            @default(now())
+    updatedAt      DateTime            @updatedAt
+
+    owner        User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+    wishlistItem WishlistItem?     @relation(fields: [wishlistItemId], references: [id], onDelete: SetNull)
+    category     ProductCategory?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+    releaseLinks ReleaseCalendarManualStoreLink[]
+
+    @@index([ownerId, isActive])
+    @@index([ownerId, storeKey])
+    @@index([wishlistItemId])
+    @@index([categoryId])
+  }
+
+model ReleaseCalendarItem {
+  id              String                 @id @default(cuid())
+  ownerId         String
+  title           String
+  setName         String?
+  productName     String?
+  categoryId      String?
+  releaseDate     DateTime
+  timezone        String?
+  priority        AlertPriority          @default(NORMAL)
+  status          ReleaseCalendarStatus  @default(UPCOMING)
+  wishlistItemId  String?
+  notes           String?
+  isActive        Boolean                @default(true)
+  discordReminder Boolean                @default(true)
+  reminderOffsets ReleaseReminderOffset[]
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+
+  owner         User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  category      ProductCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  wishlistItem  WishlistItem?    @relation(fields: [wishlistItemId], references: [id], onDelete: SetNull)
+  manualLinks   ReleaseCalendarManualStoreLink[]
+
+  @@index([ownerId, isActive])
+  @@index([ownerId, status])
+  @@index([releaseDate])
+  @@index([wishlistItemId])
+  @@index([categoryId])
+}
+
+model ReleaseCalendarManualStoreLink {
+  id                    String   @id @default(cuid())
+  releaseCalendarItemId String
+  manualStoreLinkId     String
+  createdAt             DateTime @default(now())
+
+  releaseCalendarItem ReleaseCalendarItem @relation(fields: [releaseCalendarItemId], references: [id], onDelete: Cascade)
+  manualStoreLink     ManualStoreLink     @relation(fields: [manualStoreLinkId], references: [id], onDelete: Cascade)
+
+  @@unique([releaseCalendarItemId, manualStoreLinkId])
+  @@index([manualStoreLinkId])
+}
+
+model ActionItemState {
+  id           String            @id @default(cuid())
+  userId       String
+  itemKey      String
+  status       TodayActionStatus @default(OPEN)
+  snoozedUntil DateTime?
+  dismissedAt  DateTime?
+  doneAt       DateTime?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itemKey])
+  @@index([userId, status])
+  @@index([snoozedUntil])
+}
+
+model ProductMSRP {
+  id                 String   @id @default(cuid())
+  ownerId            String?
+  categoryId         String?
+  owner              User?    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  productNamePattern String?
+  msrpCents          Int
+  currency           String   @default("USD")
+  effectiveFrom      DateTime @default(now())
+  effectiveTo        DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  category ProductCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@index([ownerId])
+  @@index([categoryId])
+}
+
+model ProductWatchRule {
+  id                   String                @id @default(cuid())
+  ownerId              String
+  name                 String
+  monitorAllSealed     Boolean               @default(true)
+  categoryId           String?
+  monitorNewReleases   Boolean               @default(true)
+  ignoreSingles        Boolean               @default(true)
+  ignoreThirdParty     Boolean               @default(true)
+  fulfillmentPreference FulfillmentPreference @default(EITHER)
+  pickupZip            String?
+  pickupRadiusMiles    Int?
+  quantityWanted       Int                   @default(1)
+  maxQuantityPerStoreProduct Int             @default(1)
+  enabled              Boolean               @default(true)
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+
+  owner    User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  category ProductCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@index([ownerId, enabled])
+}
+
+model PriceRule {
+  id                  String         @id @default(cuid())
+  ownerId             String
+  scope               PriceRuleScope
+  label               String         @default("Price rule")
+  target              String         @default("All sealed products")
+  storeId             String?
+  categoryId          String?
+  retailerProductId   String?
+  msrpCents           Int?
+  allowedMarkupCents  Int            @default(0)
+  toleranceCents      Int?
+  customMaxPriceCents Int?
+  alertThresholdCents Int?
+  storeSpecificToleranceCents    Int?
+  categorySpecificToleranceCents Int?
+  productSpecificOverrideCents   Int?
+  enabled             Boolean        @default(true)
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  owner           User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  store           Store?           @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  category        ProductCategory? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  retailerProduct RetailerProduct? @relation(fields: [retailerProductId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId, scope, enabled])
+}
+
+model RetailerProduct {
+  id                 String   @id @default(cuid())
+  storeId            String
+  categoryId         String?
+  externalId         String?
+  productUrl         String
+  imageUrl           String?
+  name               String
+  sellerName         String?
+  sellerIsOfficial   Boolean  @default(false)
+  marketplaceListing Boolean  @default(false)
+  suspicious         Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  store       Store            @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  category    ProductCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  stockChecks StockCheckResult[]
+  priceRules  PriceRule[]
+  msrpMappings ProductMSRPMapping[]
+
+  @@unique([storeId, externalId])
+  @@index([storeId])
+  @@index([productUrl])
+}
+
+model ProductMSRPMapping {
+  id                  String                @id @default(cuid())
+  ownerId             String
+  storeKey            String
+  retailerSku         String?
+  retailerProductId   String?
+  productName         String
+  normalizedProductKey String
+  productUrl          String?
+  imageUrl            String?
+  currentPriceCents   Int?
+  detectedKeywords    String[]
+  suggestedCategoryId String?
+  mappedCategoryId    String?
+  msrpCents           Int?
+  acceptedMaxPriceCents Int?
+  confidence          MSRPMappingConfidence @default(LOW)
+  status              MSRPMappingStatus     @default(UNMAPPED)
+  notes               String?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+
+  owner             User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  retailerProduct   RetailerProduct? @relation(fields: [retailerProductId], references: [id], onDelete: SetNull)
+  suggestedCategory ProductCategory?  @relation("SuggestedCategory", fields: [suggestedCategoryId], references: [id], onDelete: SetNull)
+  mappedCategory    ProductCategory?  @relation("MappedCategory", fields: [mappedCategoryId], references: [id], onDelete: SetNull)
+
+  @@unique([ownerId, storeKey, retailerSku])
+  @@unique([ownerId, storeKey, normalizedProductKey])
+  @@index([ownerId, status])
+  @@index([storeKey, retailerSku])
+}
+
+model StockCheckResult {
+  id                    String      @id @default(cuid())
+  storeId               String
+  retailerProductId     String
+  checkedAt             DateTime    @default(now())
+  priceCents            Int?
+  msrpCents             Int?
+  acceptedMaxPriceCents Int?
+  accepted              Boolean     @default(false)
+  sellerName            String?
+  sellerAccepted        Boolean     @default(false)
+  priceStatus           PriceStatus @default(UNKNOWN_MSRP)
+  alertStatus           LiveAlertStatus @default(NOT_SENT)
+  stockStatus           StockStatus @default(UNKNOWN)
+  shippingAvailable     Boolean?
+  pickupAvailable       Boolean?
+  skipReason            SkipReason  @default(NONE)
+  ignored               Boolean     @default(false)
+  bought                Boolean     @default(false)
+  snoozedUntil          DateTime?
+  rawMetadata           Json?
+
+  store           Store           @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  retailerProduct RetailerProduct @relation(fields: [retailerProductId], references: [id], onDelete: Cascade)
+  cartAttempts    CartAssistAttempt[]
+  alertEvents     AlertEvent[]
+  purchaseDecision PurchaseDecision?
+
+  @@index([checkedAt])
+  @@index([storeId, stockStatus, accepted])
+}
+
+model PurchaseDecision {
+  id                 String                 @id @default(cuid())
+  ownerId            String
+  stockCheckResultId String                 @unique
+  status             PurchaseDecisionStatus @default(NEW)
+  skipReason         PurchaseSkipReason?
+  note               String?
+  quantity           Int?
+  finalPriceCents    Int?
+  openedAt           DateTime?
+  boughtAt           DateTime?
+  skippedAt          DateTime?
+  snoozedUntil       DateTime?
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+
+  owner            User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  stockCheckResult StockCheckResult @relation(fields: [stockCheckResultId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId, status])
+  @@index([snoozedUntil])
+}
+
+model CartAssistAttempt {
+  id                   String           @id @default(cuid())
+  stockCheckResultId   String
+  status               CartAssistStatus @default(NOT_ATTEMPTED)
+  requestedQuantity    Int              @default(1)
+  productUrl           String
+  cartUrl              String?
+  helperId             String?
+  stopReason           String?
+  lastMessage          String?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  stockCheckResult StockCheckResult @relation(fields: [stockCheckResultId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([status])
+}
+
+model AlertChannel {
+  id                String           @id @default(cuid())
+  ownerId           String
+  type              AlertChannelType
+  label             String
+  enabled           Boolean          @default(false)
+  encryptedSecretId String?
+  destinationHint   String?
+  lastTestStatus    AlertDeliveryStatus?
+  lastTestAt        DateTime?
+  lastError         String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  owner           User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  encryptedSecret EncryptedSecret? @relation(fields: [encryptedSecretId], references: [id], onDelete: SetNull)
+  events          AlertEvent[]
+  deliveries      AlertDelivery[]
+
+  @@index([ownerId, type, enabled])
+}
+
+model AlertEvent {
+  id                 String           @id @default(cuid())
+  ownerId            String?
+  alertChannelId     String?
+  stockCheckResultId String?
+  type               AlertEventType
+  templateType       AlertTemplateType?
+  title              String           @default("PokeDad Radar Alert")
+  priority           AlertPriority     @default(NORMAL)
+  status             AlertEventStatus @default(PENDING)
+  message            String
+  error              String?
+  createdAt          DateTime         @default(now())
+  sentAt             DateTime?
+
+  alertChannel     AlertChannel?     @relation(fields: [alertChannelId], references: [id], onDelete: SetNull)
+  owner            User?             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  stockCheckResult StockCheckResult? @relation(fields: [stockCheckResultId], references: [id], onDelete: SetNull)
+  deliveries      AlertDelivery[]
+
+  @@index([createdAt])
+  @@index([status, type])
+  @@index([ownerId, createdAt])
+}
+
+model AlertDelivery {
+  id             String              @id @default(cuid())
+  alertEventId   String
+  alertChannelId String
+  provider       AlertChannelType
+  status         AlertDeliveryStatus @default(PENDING)
+  errorSummary   String?
+  retryCount     Int                 @default(0)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  sentAt         DateTime?
+
+  alertEvent   AlertEvent   @relation(fields: [alertEventId], references: [id], onDelete: Cascade)
+  alertChannel AlertChannel @relation(fields: [alertChannelId], references: [id], onDelete: Cascade)
+
+  @@index([alertEventId, status])
+  @@index([alertChannelId, createdAt])
+}
+
+model AuditLog {
+  id          String      @id @default(cuid())
+  actorUserId String?
+  action      AuditAction
+  summary     String
+  metadata    Json?
+  ipHash      String?
+  createdAt   DateTime    @default(now())
+
+  actor User? @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([actorUserId, action])
+}
+
+model AppSetting {
+  id        String   @id @default(cuid())
+  ownerId   String
+  key       String
+  value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@unique([ownerId, key])
+}
+
+model EncryptedSecret {
+  id           String   @id @default(cuid())
+  ownerId      String
+  name         String
+  keyVersion   String
+  ivBase64     String
+  authTagBase64 String
+  cipherTextBase64 String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  owner         User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  alertChannels AlertChannel[]
+
+  @@unique([ownerId, name])
+}
