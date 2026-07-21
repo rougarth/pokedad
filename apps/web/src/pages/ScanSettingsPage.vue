@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-import { CheckCircle2, Clock3, FlaskConical, Pause, Play, Save, Send, ShieldCheck, X } from "@lucide/vue";
+import { CheckCircle2, Clock3, Pause, Play, Save, ShieldCheck, X } from "@lucide/vue";
 import StatusBadge from "@/components/StatusBadge.vue";
 import { useRadarStore } from "@/stores/radar";
 
@@ -11,7 +11,6 @@ const approvalConfirmed = ref(false);
 const readOnlyConfirmed = ref(false);
 const actionMessage = ref("");
 const scanning = ref(false);
-const mockRunning = ref(false);
 const canConfirm = computed(() => approvalConfirmed.value && readOnlyConfirmed.value && confirmationText.value === "RUN ONE READ-ONLY SCAN" && radar.bestBuyManualReadiness.ready);
 
 onMounted(() => {
@@ -46,28 +45,6 @@ async function confirmManualScan() {
   }
 }
 
-async function runMockScan() {
-  mockRunning.value = true;
-  actionMessage.value = "";
-  try {
-    await radar.runBestBuyMockScan();
-    actionMessage.value = "MOCK / DEMO — no retailer request was made.";
-  } catch (error) {
-    actionMessage.value = String(error);
-  } finally {
-    mockRunning.value = false;
-  }
-}
-
-async function sendMockDiscordAlert() {
-  actionMessage.value = "";
-  try {
-    await radar.sendBestBuyMockDiscordAlert();
-    actionMessage.value = "TEST / MOCK Discord alert sent.";
-  } catch (error) {
-    actionMessage.value = String(error);
-  }
-}
 </script>
 
 <template>
@@ -116,18 +93,6 @@ async function sendMockDiscordAlert() {
         <div v-if="radar.bestBuyManualReadiness.reasons.length" class="mt-3 border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900"><p v-for="reason in radar.bestBuyManualReadiness.reasons" :key="reason">{{ reason }}</p></div>
         <div v-if="radar.bestBuyManualReadiness.warnings.length" class="mt-3 text-xs text-slate-600"><p v-for="warning in radar.bestBuyManualReadiness.warnings" :key="warning">{{ warning }}</p></div>
         <div class="mt-4 flex flex-wrap gap-2"><button class="flex items-center gap-2 rounded border border-radar-line px-3 py-2 text-sm font-semibold" type="button" @click="runReadinessCheck"><CheckCircle2 class="size-4" /> Run Readiness Check</button><button class="flex items-center gap-2 rounded bg-radar-teal px-3 py-2 text-sm font-semibold text-white disabled:opacity-50" :disabled="!radar.bestBuyManualReadiness.ready || !radar.bestBuyManualReadiness.readinessToken" type="button" @click="openConfirmation"><Play class="size-4" /> Review Manual Scan</button></div>
-      </div>
-
-      <div class="mt-5 border-b border-radar-line pb-5">
-        <div class="flex flex-wrap items-start justify-between gap-3">
-          <div class="flex items-start gap-3"><FlaskConical class="mt-0.5 size-5 text-radar-teal" /><div><h3 class="text-sm font-semibold">Mock Scan Mode</h3><p class="mt-1 text-sm text-slate-600">MOCK / DEMO — no retailer request was made. Use this while Best Buy approval is pending to test mappings, alerts, and Notification History.</p></div></div>
-          <StatusBadge label="MOCK / DEMO" tone="blue" />
-        </div>
-        <div class="mt-4 flex flex-wrap gap-2">
-          <button class="flex items-center gap-2 rounded bg-radar-teal px-3 py-2 text-sm font-semibold text-white disabled:opacity-50" :disabled="mockRunning" type="button" @click="runMockScan"><FlaskConical class="size-4" /> Run Mock Scan</button>
-          <button class="flex items-center gap-2 rounded border border-radar-line px-3 py-2 text-sm font-semibold" type="button" @click="sendMockDiscordAlert"><Send class="size-4" /> Send Mock Discord Alert</button>
-        </div>
-        <p class="mt-3 text-xs text-slate-500">Mock scan simulates products returned, accepted products, MSRP matches, accepted markup, over-limit products, unknown MSRP, mapping candidates, alert events, duplicate suppression, and zero Best Buy requests.</p>
       </div>
 
       <div class="mt-5 border-b border-radar-line pb-5">

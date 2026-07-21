@@ -8,7 +8,6 @@ import { assertNoSensitiveKeys } from "../../security/sanitizer.js";
 import { AuditService } from "../../services/audit.service.js";
 import { assertCapabilityAllowed } from "./adapter-safety.js";
 import { BestBuyAdapter } from "./bestbuy/bestbuy.adapter.js";
-import { BestBuyMockScanService } from "./bestbuy/bestbuy-mock-scan.service.js";
 import { BestBuyScanService } from "./bestbuy/bestbuy-scan.service.js";
 import { BestBuyManualReadinessService } from "./bestbuy/bestbuy-manual-readiness.service.js";
 import { getBestBuySchedulerState, saveBestBuySchedulerState } from "./bestbuy/bestbuy-scheduler.service.js";
@@ -67,8 +66,7 @@ function services(app: FastifyInstance) {
     audit: new AuditService(app.prisma),
     registry: buildRegistry(),
     bestBuyScan: new BestBuyScanService(app.prisma, bestBuyAdapter),
-    bestBuyReadiness: new BestBuyManualReadinessService(app.prisma, bestBuyAdapter),
-    bestBuyMock: new BestBuyMockScanService(app.prisma)
+    bestBuyReadiness: new BestBuyManualReadinessService(app.prisma, bestBuyAdapter)
   };
 }
 
@@ -291,17 +289,6 @@ export async function registerAdapterRoutes(app: FastifyInstance): Promise<void>
     return reply.code(responseCode).send(result);
   });
 
-  app.post("/adapters/best-buy/mock-scan", async (request) => {
-    const { bestBuyMock } = services(app);
-    return await bestBuyMock.run(request.currentUser!.id);
-  });
-
-  app.post("/adapters/best-buy/mock-discord-alert", async (request, reply) => {
-    const { bestBuyMock } = services(app);
-    const result = await bestBuyMock.sendMockDiscordAlert(request.currentUser!.id);
-    return reply.code(result.delivered ? 200 : 422).send(result);
-  });
-
   app.post("/adapters/best-buy/enable-scan", async (request) => {
     const { bestBuyScan } = services(app);
     const config = await bestBuyScan.saveConfig(request.currentUser!.id, { enabled: true });
@@ -426,9 +413,9 @@ export async function registerAdapterRoutes(app: FastifyInstance): Promise<void>
     await logAdapterAction(audit, {
       action: "BEST_BUY_SCAN_API_KEY_MISSING",
       actorUserId: request.currentUser!.id,
-      summary: "Legacy Best Buy test scan endpoint blocked; use Mock Scan Mode or manual readiness.",
+      summary: "Legacy Best Buy test scan endpoint blocked; use manual readiness after configuration.",
       metadata: { storeKey: "best-buy", noRetailerRequest: true }
     });
-    return reply.code(409).send({ error: "Live test scans are paused. Use /adapters/best-buy/mock-scan while approval is pending, or run manual readiness after BEST_BUY_API_KEY is configured." });
+    return reply.code(409).send({ error: "Live scans are paused until BEST_BUY_API_KEY is configured and official API access is approved." });
   });
 }

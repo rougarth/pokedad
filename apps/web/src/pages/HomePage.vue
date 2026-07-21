@@ -45,7 +45,7 @@ const radar = useRadarStore();
     <section class="rounded border border-radar-line bg-white p-5 shadow-soft">
       <h2 class="text-base font-semibold">Safety posture</h2>
       <p class="mt-2 text-sm text-slate-600">
-        All stores are demo/open-only. Cart assist can open product/cart flows later through a local helper, but this MVP does not automate checkout or bypass CAPTCHA, queues, login checks, purchase limits, or human verification.
+        Stores without approved official adapters remain manual/open-only. The application does not automate checkout or bypass CAPTCHA, queues, login checks, purchase limits, or human verification.
       </p>
     </section>
   </div>

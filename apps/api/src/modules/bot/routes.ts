@@ -1,20 +1,13 @@
 import { randomUUID } from "node:crypto";
 import type { FastifyInstance } from "fastify";
 import { Redis } from "ioredis";
-import { z } from "zod";
 import { env } from "../../config/env.js";
-
-const mockScanSchema = z.object({
-  store: z.enum(["best-buy", "target", "walmart", "pokemon-center", "gamestop", "amazon", "costco", "sams-club", "bjs"]),
-  sku: z.string().trim().min(1).max(100).default("demo")
-});
 
 type BotResult = {
   requestId?: string | null;
   status: string;
   store?: string;
   sku?: string | null;
-  mock?: boolean;
   message?: string;
   error?: string;
   stores?: unknown[];
@@ -56,14 +49,4 @@ export async function registerBotRoutes(app: FastifyInstance): Promise<void> {
     }
   });
 
-  app.post("/bot/mock-scan", async (request, reply) => {
-    const body = mockScanSchema.parse(request.body);
-    try {
-      const result = await sendBotCommand({ action: "scan", store: body.store, sku: body.sku, mode: "mock" });
-      request.log.info({ store: body.store, status: result.status, mock: true }, "Safe bot mock scan completed");
-      return { connected: true, result };
-    } catch {
-      return reply.code(503).send({ connected: false, error: "Safe bot worker is unavailable." });
-    }
-  });
 }

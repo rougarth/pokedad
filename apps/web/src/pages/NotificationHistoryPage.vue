@@ -69,7 +69,7 @@ async function saveNotificationNote() {
         </thead>
         <tbody class="divide-y divide-radar-line">
           <tr v-for="item in radar.notifications" :key="item.id">
-            <td class="px-4 py-4"><p class="font-semibold">{{ item.title }}</p><div class="mt-1 flex flex-wrap gap-1"><p class="text-xs text-slate-500">{{ item.alertType }}</p><StatusBadge v-if="item.isMockDemo" label="TEST" tone="blue" /><StatusBadge v-if="item.isMockDemo" label="MOCK" tone="blue" /><StatusBadge v-if="item.isMockDemo" label="DEMO" tone="blue" /></div></td>
+            <td class="px-4 py-4"><p class="font-semibold">{{ item.title }}</p><p class="mt-1 text-xs text-slate-500">{{ item.alertType }}</p></td>
             <td class="px-4 py-4">
               <StatusBadge :label="item.priority" :tone="radar.statusTone(item.priority)" />
               <StatusBadge v-if="item.wishlistPriority" class="mt-1" :label="`Wishlist ${item.wishlistPriority}`" :tone="radar.statusTone(item.wishlistPriority)" />
@@ -92,7 +92,7 @@ async function saveNotificationNote() {
     <div v-if="radar.selectedNotification" class="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/50 p-4" role="dialog" aria-modal="true">
       <div class="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded border border-radar-line bg-white shadow-xl">
         <header class="sticky top-0 flex items-center justify-between border-b border-radar-line bg-white p-4">
-          <div><h2 class="font-semibold">{{ radar.selectedNotification.title }}</h2><div class="mt-1 flex flex-wrap gap-1"><p class="text-xs text-slate-500">{{ radar.selectedNotification.alertType }}</p><StatusBadge v-if="radar.selectedNotification.isMockDemo" label="TEST" tone="blue" /><StatusBadge v-if="radar.selectedNotification.isMockDemo" label="MOCK" tone="blue" /><StatusBadge v-if="radar.selectedNotification.isMockDemo" label="DEMO" tone="blue" /></div></div>
+          <div><h2 class="font-semibold">{{ radar.selectedNotification.title }}</h2><p class="mt-1 text-xs text-slate-500">{{ radar.selectedNotification.alertType }}</p></div>
           <button class="rounded border border-radar-line p-2" title="Close details" type="button" @click="radar.closeNotificationDetail()"><X class="size-4" /></button>
         </header>
         <div class="space-y-6 p-5">

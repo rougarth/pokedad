@@ -14,6 +14,7 @@
     "db:seed": "npm run db:seed -w @pokedad-radar/api",
     "db:migrate": "npm run db:migrate -w @pokedad-radar/api",
     "db:deploy": "npm run db:deploy -w @pokedad-radar/api",
+    "db:remove-mock-data": "npm run db:remove-mock-data -w @pokedad-radar/api",
     "security:check": "node scripts/security-check.mjs"
   },
   "workspaces": [

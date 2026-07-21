@@ -7,7 +7,7 @@ import { useRadarStore, type WishlistAlertBehavior, type WishlistItem, type Wish
 const radar = useRadarStore();
 const editingId = ref<string | null>(null);
 const message = ref("");
-const previewProductName = ref("MOCK / DEMO - Prismatic Evolutions Pokemon Booster Bundle");
+const previewProductName = ref("Prismatic Evolutions Pokemon Booster Bundle");
 const previewStoreKey = ref("best-buy");
 
 const form = reactive({
@@ -140,7 +140,7 @@ onMounted(async () => {
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 class="text-base font-semibold">Wishlist</h2>
-          <p class="text-sm text-slate-600">Private product priorities for mock scans now and future read-only store adapters later.</p>
+          <p class="text-sm text-slate-600">Private product priorities for approved read-only store adapters and manual product review.</p>
         </div>
         <StatusBadge label="NO CART / NO CHECKOUT" tone="slate" />
       </div>

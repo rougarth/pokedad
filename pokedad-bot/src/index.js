@@ -18,16 +18,6 @@ function scanResponse(command) {
   const safety = getStoreSafety(command.store);
   if (!safety) return { status: "ERROR", error: "Unknown store." };
 
-  if (command.mode === "mock") {
-    return {
-      status: "MOCK_ONLY",
-      store: safety.storeKey,
-      sku: command.sku ?? null,
-      mock: true,
-      message: "MOCK / DEMO - no retailer request was made."
-    };
-  }
-
   if (!safety.liveAllowed) {
     return {
       status: "MANUAL_ONLY",
@@ -70,7 +60,7 @@ async function handleCommand(raw) {
 
   if (command.action === "scan") {
     const result = scanResponse(command);
-    safeLog("info", "Safe scan command handled.", { store: command.store, status: result.status });
+    safeLog("info", "Store readiness command handled.", { store: command.store, status: result.status });
     await publishResult(command, result);
     return;
   }

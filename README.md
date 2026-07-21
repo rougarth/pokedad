@@ -87,11 +87,11 @@ npm run db:migrate
 npm run db:seed
 ```
 
-`npm run db:seed` refreshes demo data for the local admin user. It does not store retailer passwords, retailer cookies, retailer session tokens, card numbers, CVV, or payment data.
+`npm run db:seed` creates the local admin account and baseline configuration. It does not store retailer passwords, retailer cookies, retailer session tokens, card numbers, CVV, or payment data.
 
 ## Phase 3 Limitations
 
-- Store behavior is still open-only/demo-only.
+- Store behavior remains approved official API or manual/open-only.
 - Alert delivery is persisted as placeholder `AlertEvent` records.
 - Browser helper remains a shell.
 - No real retailer adapters exist yet.
@@ -273,13 +273,11 @@ Phase 13 gates every real manual Best Buy scan behind a local readiness check, a
 
 The readiness check does not contact Best Buy. Confirm developer approval yourself, restart the API after adding the key, run readiness, then authorize exactly one official API scan. Keep the scheduler `STOPPED`. See `docs/phase-13-best-buy-manual-scan-readiness.md` for the complete runbook.
 
-## Phase 13 Best Buy Approval Pending + Mock Mode
+## Phase 13 Best Buy Approval Pending
 
 While Best Buy API approval/key access is pending, the dashboard now shows `APPROVAL_PENDING`, explains that live scans are paused, and keeps the scheduler stopped. Enabling the scheduler without a key returns a setup-needed response and makes no retailer request.
 
-Use **Scan Settings** -> **Run Mock Scan** to exercise local products, accepted/over-limit/unknown-MSRP counts, MSRP mapping candidates, alert events, duplicate suppression, Live Finds, and Notification History. Every mock record is labeled `MOCK / DEMO — no retailer request was made`, and request count remains `0`.
-
-Use **Send Mock Discord Alert** to send a clearly marked `TEST / MOCK ALERT — PokeDad Radar` message through the connected Discord channel. Secrets remain encrypted and masked. See `docs/phase-13-bestbuy-approval-pending-mode.md`.
+Live Best Buy scans remain paused until an approved official API key is configured. Channel testing remains available through clearly marked test alerts. See `docs/phase-13-bestbuy-approval-pending-mode.md`.
 
 ## Phase 14 Manual Purchase Assist
 
@@ -291,7 +289,7 @@ The manual assist panel shows price, MSRP, max accepted price, source, delivery 
 
 Phase 15 adds a private Wishlist page for Pokemon TCG products, sets, categories, store preferences, desired quantities, max prices, allowed markups, priority, and alert behavior. Wishlist matching is local and keyword/category/store based.
 
-Mock Scan Mode now demonstrates urgent, high, dashboard-only, unknown-MSRP, and ignored wishlist outcomes without making any retailer request. Live Finds and Notification History show wishlist priority, matched item, set name, and alert behavior. See `docs/phase-15-wishlist-priority-rules.md`.
+Live Finds and Notification History show wishlist priority, matched item, set name, and alert behavior for approved read-only sources. See `docs/phase-15-wishlist-priority-rules.md`.
 
 Phase 15 still adds no scraping, cart automation, checkout, add-to-cart, auto-purchase, retailer credentials, sessions, cookies, or payment data.
 
@@ -319,7 +317,7 @@ Walmart is verified across the safety matrix, Manual Store Links seed, Wishlist 
 
 ## Phase 19 Today's Action List
 
-Phase 19 adds `Today's Action List`, a daily review dashboard that ranks release dates, urgent wishlist items, manual links to check, MSRP mapping needs, mock/demo finds, recent alerts, snoozed items, and purchase decisions.
+Phase 19 adds `Today's Action List`, a daily review dashboard that ranks release dates, urgent wishlist items, manual links to check, MSRP mapping needs, recent alerts, snoozed items, and purchase decisions.
 
 The page persists only local action state such as dismissed, snoozed, or done. The action cards are derived from existing DB-backed data. Opening a manual link still only records local `lastOpenedAt`/`openCount` and opens the URL from the frontend; the backend never fetches retailer URLs.
 
@@ -475,14 +473,14 @@ This is not a crawler: there is no background polling, scheduled retailer reques
 
 ## Integrated Safe Bot Worker
 
-`pokedad-bot` runs alongside the API, dashboard, PostgreSQL, and Redis. The authenticated Store Adapters page can check worker status and run clearly labeled mock scans through `/bot/status` and `/bot/mock-scan`.
+`pokedad-bot` runs alongside the API, dashboard, PostgreSQL, and Redis. The authenticated Store Adapters page can check worker status through `/bot/status`. It does not scrape retailers or perform cart or checkout actions.
 
 ```powershell
 npm run dev:bot
 npm run proxy:check -w @pokedad-radar/bot
 ```
 
-`Dockerfile.bot` builds the home-server worker. The Webshare list is mounted from the ignored local file `pokedad-bot/proxies.txt`; it is never copied into an image or committed. Best Buy live scans remain in the official API readiness flow, and research-only stores remain mock/manual.
+`Dockerfile.bot` builds the home-server worker. The Webshare list is mounted from the ignored local file `pokedad-bot/proxies.txt`; it is never copied into an image or committed. Best Buy live scans remain in the official API readiness flow, and research-only stores remain manual/open-only.
 
 ## Safety Rules
 

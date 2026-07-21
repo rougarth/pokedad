@@ -133,7 +133,6 @@ onMounted(() => {
           <td>
             <div class="font-medium">{{ find.productName }}</div>
             <StatusBadge v-if="find.source === 'BEST_BUY_API'" class="mt-1" label="BEST_BUY_API" tone="blue" />
-            <StatusBadge v-if="find.source === 'BEST_BUY_MOCK_DEMO'" class="mt-1" label="MOCK / DEMO" tone="blue" />
             <StatusBadge v-if="find.wishlistPriority" class="mt-1" :label="`Wishlist ${find.wishlistPriority}`" :tone="radar.statusTone(find.wishlistPriority)" />
             <StatusBadge v-if="find.wishlistAlertBehavior" class="mt-1" :label="find.wishlistAlertBehavior" :tone="radar.statusTone(find.wishlistAlertBehavior)" />
             <div v-if="find.wishlistItemName" class="text-xs text-slate-500">Matched: {{ find.wishlistItemName }}</div>

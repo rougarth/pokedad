@@ -29,7 +29,7 @@ const visibleItems = computed(() => {
     if (activeTab.value === "WISHLIST") return item.type === "WISHLIST_PRIORITY";
     if (activeTab.value === "MANUAL_LINKS") return item.type === "MANUAL_LINK_CHECK";
     if (activeTab.value === "NEEDS_REVIEW") return item.type === "MSRP_MAPPING_NEEDED" || item.type === "ALERT_REVIEW";
-    if (activeTab.value === "DECISIONS") return item.type === "PURCHASE_DECISION_NEEDED" || item.type === "MOCK_FIND_REVIEW" || item.type === "SNOOZE_EXPIRED";
+    if (activeTab.value === "DECISIONS") return item.type === "PURCHASE_DECISION_NEEDED" || item.type === "SNOOZE_EXPIRED";
     return true;
   });
 });
@@ -103,7 +103,7 @@ onMounted(async () => {
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 class="text-base font-semibold">Today's Action List</h2>
-          <p class="mt-1 text-sm text-slate-600">A daily manual review dashboard combining wishlist priorities, releases, manual links, mock finds, alerts, and purchase decisions.</p>
+          <p class="mt-1 text-sm text-slate-600">A daily manual review dashboard combining wishlist priorities, releases, manual links, alerts, and purchase decisions.</p>
         </div>
         <div class="flex flex-wrap gap-2">
           <StatusBadge label="MANUAL ONLY" tone="blue" />

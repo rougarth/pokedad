@@ -8,7 +8,6 @@ export type TodayActionItemType =
   | "RELEASE_SOON"
   | "WISHLIST_PRIORITY"
   | "MANUAL_LINK_CHECK"
-  | "MOCK_FIND_REVIEW"
   | "MSRP_MAPPING_NEEDED"
   | "PURCHASE_DECISION_NEEDED"
   | "SNOOZE_EXPIRED"
@@ -201,6 +200,7 @@ export class TodayService {
       const metadata = check.rawMetadata && typeof check.rawMetadata === "object" && !Array.isArray(check.rawMetadata) ? check.rawMetadata as Record<string, unknown> : {};
       const decisionStatus = check.purchaseDecision?.status ?? (check.bought ? "BOUGHT" : check.ignored ? "SKIPPED" : "NEW");
       const isMock = metadata.mock === true || metadata.demo === true || String(metadata.source ?? "").includes("MOCK");
+      if (isMock) continue;
       const priority = (typeof metadata.wishlistPriority === "string" ? metadata.wishlistPriority : check.accepted ? "HIGH" : "NORMAL") as TodayActionItem["priority"];
       if (decisionStatus === "NEW" || decisionStatus === "OPENED" || check.accepted) {
         const key = `decision:${check.id}`;
@@ -208,10 +208,10 @@ export class TodayService {
           id: key,
           key,
           title: check.retailerProduct.name,
-          type: isMock ? "MOCK_FIND_REVIEW" : "PURCHASE_DECISION_NEEDED",
+          type: "PURCHASE_DECISION_NEEDED",
           priority,
           status: "OPEN",
-          source: isMock ? "Mock/Demo Finds" : "Live Finds",
+          source: "Live Finds",
           productName: check.retailerProduct.name,
           storeName: check.store.name,
           storeKey: check.store.slug,
@@ -223,8 +223,8 @@ export class TodayService {
           purchaseDecisionId: check.purchaseDecision?.id ?? null,
           manualStoreLinks: [],
           dueAt: check.checkedAt.toISOString(),
-          reasons: [check.accepted ? "Accepted price needs a manual decision." : "Product needs review.", isMock ? "MOCK / DEMO item." : "Open Product only."],
-          badges: [priority, isMock ? "MOCK/DEMO" : "OPEN PRODUCT", check.priceStatus],
+          reasons: [check.accepted ? "Accepted price needs a manual decision." : "Product needs review.", "Open Product only."],
+          badges: [priority, "OPEN PRODUCT", check.priceStatus],
           rank: (check.accepted ? 8500 : 5000) + priorityScore(priority)
         }, stateByKey));
       }
@@ -346,7 +346,7 @@ export class TodayService {
       upcomingReleasesThisWeek: items.filter((item) => item.type === "RELEASE_SOON" && item.dueAt && new Date(item.dueAt) <= weekEnd).length,
       manualLinksToCheck: items.filter((item) => item.type === "MANUAL_LINK_CHECK").length,
       needsMapping: items.filter((item) => item.type === "MSRP_MAPPING_NEEDED").length,
-      decisionsNeeded: items.filter((item) => item.type === "PURCHASE_DECISION_NEEDED" || item.type === "MOCK_FIND_REVIEW").length,
+      decisionsNeeded: items.filter((item) => item.type === "PURCHASE_DECISION_NEEDED").length,
       boughtThisWeek: completed.filter((item) => item.type === "BOUGHT_RECENTLY" && item.dueAt && new Date(item.dueAt) >= new Date(todayStart.getTime() - 6 * dayMs)).length,
       skippedThisWeek: completed.filter((item) => item.type === "SKIPPED_RECENTLY" && item.dueAt && new Date(item.dueAt) >= new Date(todayStart.getTime() - 6 * dayMs)).length
     };

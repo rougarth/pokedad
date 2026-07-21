@@ -5,6 +5,7 @@ import { env } from "../src/config/env.js";
 import { SecretsService } from "../src/security/secrets.service.js";
 
 const prisma = new PrismaClient();
+const seedSampleData = process.env.SEED_SAMPLE_DATA === "true";
 
 const hoursAgo = (hours: number) => new Date(Date.now() - hours * 60 * 60 * 1000);
 const mappingKey = (name: string, url?: string) => `${name} ${url ?? ""}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 180);
@@ -574,6 +575,7 @@ async function main() {
     });
   }
 
+  if (seedSampleData) {
   const products = new Map<string, string>();
   for (const [name, kind, storeId, imageColor, sellerName, sellerIsOfficial, productUrl] of productSeeds) {
     const retailerProduct = await prisma.retailerProduct.create({
@@ -762,6 +764,7 @@ async function main() {
       }
     });
   }
+  }
 
   await prisma.auditLog.createMany({
     data: [
@@ -771,8 +774,7 @@ async function main() {
     ]
   });
 
-  console.log(`Seeded PokeDad Radar demo data for ${email}`);
-  console.log(`Default local password: ${env.ADMIN_PASSWORD}`);
+  console.log(`Seeded PokeDad Radar baseline data for ${email}. Sample data: ${seedSampleData ? "enabled" : "disabled"}.`);
 }
 
 main()

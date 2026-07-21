@@ -125,7 +125,7 @@ export class AlertTemplateService {
   }
 
   private titleFor(type: AlertTemplateType, test: boolean): string {
-    if (test) return "TEST / MOCK ALERT — PokeDad Radar";
+    if (test) return "TEST ALERT - PokeDad Radar";
     const titles: Record<AlertTemplateType, string> = {
       ACCEPTED_PRICE_FOUND: "\u{1F6A8} PokeDad Radar",
       MSRP_MATCH_FOUND: "\u{1F6A8} MSRP Match Found",
@@ -134,7 +134,7 @@ export class AlertTemplateService {
       HUMAN_REVIEW_NEEDED: "\u26A0\uFE0F Human Review Needed",
       SCAN_FAILED: "\u2699\uFE0F PokeDad Radar Notice",
       CONFIGURATION_NEEDED: "\u2699\uFE0F Configuration Needed",
-      TEST_ALERT: "TEST / MOCK ALERT — PokeDad Radar",
+      TEST_ALERT: "TEST ALERT - PokeDad Radar",
       RELEASE_REMINDER: "\u{1F4C5} PokeDad Radar Release Reminder",
       TEST_RELEASE_REMINDER: "TEST RELEASE REMINDER - PokeDad Radar"
     };

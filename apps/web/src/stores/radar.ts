@@ -88,8 +88,6 @@ export interface SafeBotStatus {
   connected: boolean;
   status: string;
   message?: string;
-  lastMockStore?: string;
-  lastMockAt?: string;
 }
 
 export type BestBuyScanStatus = "IDLE" | "CONFIGURATION_NEEDED" | "APPROVAL_PENDING" | "RUNNING" | "SUCCEEDED" | "FAILED" | "RATE_LIMITED" | "DISABLED";
@@ -363,7 +361,7 @@ export interface ReleaseCalendarItem {
   updatedAt: string;
 }
 
-export type TodayActionItemType = "RELEASE_TODAY" | "RELEASE_SOON" | "WISHLIST_PRIORITY" | "MANUAL_LINK_CHECK" | "MOCK_FIND_REVIEW" | "MSRP_MAPPING_NEEDED" | "PURCHASE_DECISION_NEEDED" | "SNOOZE_EXPIRED" | "ALERT_REVIEW" | "BOUGHT_RECENTLY" | "SKIPPED_RECENTLY";
+export type TodayActionItemType = "RELEASE_TODAY" | "RELEASE_SOON" | "WISHLIST_PRIORITY" | "MANUAL_LINK_CHECK" | "MSRP_MAPPING_NEEDED" | "PURCHASE_DECISION_NEEDED" | "SNOOZE_EXPIRED" | "ALERT_REVIEW" | "BOUGHT_RECENTLY" | "SKIPPED_RECENTLY";
 export type TodayActionStatus = "OPEN" | "IN_PROGRESS" | "DONE" | "SNOOZED" | "DISMISSED";
 
 export interface TodaySummary {
@@ -530,8 +528,6 @@ export const useRadarStore = defineStore("radar", {
     adapterLookupSku: "",
     adapterQuery: "pokemon tcg",
     safeBotStatus: { connected: false, status: "UNAVAILABLE" } as SafeBotStatus,
-    safeBotStore: "walmart",
-    safeBotSku: "demo",
     bestBuyScanConfig: { ...defaultBestBuyScanConfig } as BestBuyScanConfig,
     bestBuyScanStatus: { ...defaultBestBuyScanState } as BestBuyScanState,
     bestBuySchedulerState: { ...defaultBestBuySchedulerState } as BestBuySchedulerState,
@@ -576,7 +572,7 @@ export const useRadarStore = defineStore("radar", {
     } as TodaySummary,
     analytics: null as AnalyticsData | null,
     analyticsPeriod: "ALL_TIME" as "TODAY" | "LAST_7_DAYS" | "LAST_30_DAYS" | "THIS_MONTH" | "ALL_TIME",
-    analyticsMockMode: "ALL" as "MOCK_ONLY" | "REAL_ONLY" | "ALL",
+    analyticsMockMode: "REAL_ONLY" as "REAL_ONLY",
     notificationFilter: "ALL",
     alertTemplateSettings: { compactMobileAlerts: true, includeProductImage: true, includeMsrpDetails: true, includeOpenProductLink: true } as AlertTemplateSettings,
     alertPreview: "",
@@ -1029,21 +1025,6 @@ export const useRadarStore = defineStore("radar", {
       };
       return this.safeBotStatus;
     },
-    async runSafeBotMockScan() {
-      const response = await apiWithBody<{ connected: boolean; result?: { status: string; store?: string; mock?: boolean; message?: string; timestamp?: string }; error?: string }>("/bot/mock-scan", {
-        method: "POST",
-        body: JSON.stringify({ store: this.safeBotStore, sku: this.safeBotSku || "demo" })
-      });
-      this.safeBotStatus = {
-        connected: response.ok && response.body.connected,
-        status: response.body.result?.status ?? "UNAVAILABLE",
-        message: response.body.result?.message ?? response.body.error,
-        lastMockStore: response.body.result?.store,
-        lastMockAt: response.body.result?.timestamp
-      };
-      if (!response.ok) throw new Error(response.body.error ?? "Safe bot worker is unavailable.");
-      return response.body.result;
-    },
     async loadBestBuyScan() {
       const response = await api<{ config: BestBuyScanConfig; scanStatus: BestBuyScanState; schedulerState: BestBuySchedulerState }>("/adapters/best-buy/scan-status");
       this.setBestBuyScan(response.config, response.scanStatus);
@@ -1129,31 +1110,6 @@ export const useRadarStore = defineStore("radar", {
       if (!response.ok && ![409, 429].includes(response.status)) {
         throw new Error(response.body.error ?? `Best Buy scan failed with ${response.status}`);
       }
-    },
-    async runBestBuyMockScan() {
-      this.adapterLastMessage = "";
-      const response = await apiWithBody<{ adapter: AdapterStatus; config: BestBuyScanConfig; scanStatus: BestBuyScanState; results: AdapterProduct[]; liveFinds: DemoLiveFind[]; summary?: Record<string, number>; error?: string }>("/adapters/best-buy/mock-scan", {
-        method: "POST",
-        body: "{}"
-      });
-      this.upsertAdapter(response.body.adapter);
-      if (response.body.config && response.body.scanStatus) this.setBestBuyScan(response.body.config, response.body.scanStatus);
-      this.adapterResults = response.body.results ?? [];
-      if (response.body.liveFinds?.length) this.finds = response.body.liveFinds;
-      await Promise.all([this.loadNotifications(), this.loadAuditLogs(), this.loadMSRPMappings(this.msrpMappingFilter)]);
-      const summary = response.body.summary;
-      this.adapterLastMessage = response.body.error ?? (summary ? `MOCK / DEMO scan: ${summary.productsReturned} products, ${summary.acceptedProducts} accepted, ${summary.unknownMsrpProducts} unknown MSRP, ${summary.bestBuyRequestsMade} Best Buy requests made.` : "MOCK / DEMO — no retailer request was made.");
-      if (!response.ok) throw new Error(response.body.error ?? `Mock scan failed with ${response.status}`);
-      return response.body;
-    },
-    async sendBestBuyMockDiscordAlert() {
-      const response = await apiWithBody<{ delivered?: boolean; error?: string }>("/adapters/best-buy/mock-discord-alert", {
-        method: "POST",
-        body: "{}"
-      });
-      await Promise.all([this.loadNotifications(), this.loadAuditLogs(), this.loadAlertChannels()]);
-      if (!response.ok) throw new Error(response.body.error ?? "Mock Discord alert was not delivered.");
-      return response.body;
     },
     async runBestBuyTestScan() {
       throw new Error("Use Scan Settings readiness and confirmation for a manual scan.");

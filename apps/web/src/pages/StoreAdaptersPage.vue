@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from "vue";
 import { RouterLink } from "vue-router";
-import { ExternalLink, FlaskConical, Pause, Play, Search } from "@lucide/vue";
+import { ExternalLink, Pause, Play, Search } from "@lucide/vue";
 import StatusBadge from "@/components/StatusBadge.vue";
 import { useRadarStore } from "@/stores/radar";
 
@@ -23,22 +23,11 @@ onMounted(() => {
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 class="text-base font-semibold">PokeDad Safe Bot Worker</h2>
-          <p class="mt-1 text-sm text-slate-600">Integrated through authenticated API and Redis. Mock/manual only for stores without approved APIs.</p>
+          <p class="mt-1 text-sm text-slate-600">Integrated through the authenticated API and Redis. Stores without approved APIs remain manual-only.</p>
         </div>
         <StatusBadge :label="radar.safeBotStatus.connected ? radar.safeBotStatus.status : 'UNAVAILABLE'" :tone="radar.safeBotStatus.connected ? 'green' : 'red'" />
       </div>
-      <div class="mt-4 grid gap-3 md:grid-cols-[1fr_1fr_auto_auto]">
-        <label class="text-xs font-semibold uppercase text-slate-500">Store
-          <select v-model="radar.safeBotStore" class="mt-2 w-full rounded border border-radar-line bg-white px-3 py-2 text-sm">
-            <option value="best-buy">Best Buy</option><option value="target">Target</option><option value="walmart">Walmart</option><option value="pokemon-center">Pokemon Center</option><option value="gamestop">GameStop</option><option value="amazon">Amazon</option><option value="costco">Costco</option><option value="sams-club">Sam's Club</option><option value="bjs">BJ's</option>
-          </select>
-        </label>
-        <label class="text-xs font-semibold uppercase text-slate-500">SKU / reference
-          <input v-model="radar.safeBotSku" class="mt-2 w-full rounded border border-radar-line px-3 py-2 text-sm" maxlength="100" />
-        </label>
-        <button class="self-end rounded border border-radar-line px-3 py-2 text-sm font-semibold" type="button" @click="radar.loadSafeBotStatus()">Check Status</button>
-        <button class="flex self-end items-center gap-2 rounded bg-radar-teal px-3 py-2 text-sm font-semibold text-white disabled:opacity-50" :disabled="!radar.safeBotStatus.connected" type="button" @click="radar.runSafeBotMockScan()"><FlaskConical class="size-4" /> Run Mock</button>
-      </div>
+      <button class="mt-4 rounded border border-radar-line px-3 py-2 text-sm font-semibold" type="button" @click="radar.loadSafeBotStatus()">Check Status</button>
       <p class="mt-3 rounded border border-radar-line bg-radar-panel p-3 text-sm text-slate-700">{{ radar.safeBotStatus.message ?? 'No retailer request is made by this worker.' }}</p>
     </section>
     <section class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
@@ -66,7 +55,7 @@ onMounted(() => {
         <p v-if="bestBuy?.message" class="mt-4 rounded border border-radar-line bg-radar-panel p-3 text-sm text-slate-700">{{ bestBuy.message }}</p>
         <div v-if="!bestBuy?.configured" class="mt-4 rounded border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
           <p class="font-semibold">Best Buy API approval pending. Live scans are paused until BEST_BUY_API_KEY is configured.</p>
-          <p class="mt-1">Mock/demo mode is available below and never calls Best Buy. Official read-only live scans can run only after approval, env setup, API restart, readiness check, and explicit manual confirmation.</p>
+          <p class="mt-1">Official read-only live scans can run only after approval, environment setup, an API restart, a readiness check, and explicit manual confirmation.</p>
         </div>
 
         <div class="mt-5 grid gap-4 md:grid-cols-2">
@@ -144,11 +133,6 @@ onMounted(() => {
           Prepare Manual Scan
         </RouterLink>
 
-        <button class="mt-3 flex w-full items-center justify-center gap-2 rounded border border-radar-line px-3 py-2 text-sm font-semibold" type="button" @click="radar.runBestBuyMockScan()">
-          <FlaskConical class="size-4" />
-          Run Mock Scan
-        </button>
-
         <button v-if="radar.bestBuyScanConfig.enabled" class="mt-3 flex w-full items-center justify-center gap-2 rounded border border-radar-line px-3 py-2 text-sm font-semibold" type="button" @click="radar.setBestBuyScanEnabled(false)">
           <Pause class="size-4" />
           Disable Scan
@@ -171,7 +155,7 @@ onMounted(() => {
         </a>
 
         <p v-if="radar.adapterLastMessage" class="mt-4 rounded border border-radar-line bg-radar-panel p-3 text-sm text-slate-700">{{ radar.adapterLastMessage }}</p>
-        <p v-else-if="!bestBuy?.configured" class="mt-4 rounded border border-radar-line bg-radar-panel p-3 text-sm text-slate-700">APPROVAL_PENDING: add `BEST_BUY_API_KEY` to the local API environment after Best Buy approval and restart the API. Until then, use Mock Scan Mode only.</p>
+        <p v-else-if="!bestBuy?.configured" class="mt-4 rounded border border-radar-line bg-radar-panel p-3 text-sm text-slate-700">APPROVAL_PENDING: add `BEST_BUY_API_KEY` to the local API environment after Best Buy approval and restart the API. Live scans remain unavailable until then.</p>
       </div>
     </section>
 

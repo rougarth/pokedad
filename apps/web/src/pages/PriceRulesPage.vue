@@ -27,7 +27,7 @@ const draft = reactive({
         <label class="text-sm font-medium">Allowed markup<input v-model.number="draft.allowedMarkupCents" class="mt-2 h-10 w-full rounded border border-radar-line px-3" type="number" /></label>
         <label class="text-sm font-medium">Max accepted<input v-model.number="draft.maxAcceptedPriceCents" class="mt-2 h-10 w-full rounded border border-radar-line px-3" type="number" /></label>
       </div>
-      <button class="mt-4 h-10 rounded bg-radar-teal px-4 font-semibold text-white" type="button" @click="radar.createPriceRule(draft)">Add demo rule</button>
+      <button class="mt-4 h-10 rounded bg-radar-teal px-4 font-semibold text-white" type="button" @click="radar.createPriceRule(draft)">Add price rule</button>
     </section>
 
     <section class="table-shell rounded">

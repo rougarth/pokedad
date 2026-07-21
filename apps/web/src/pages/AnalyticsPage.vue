@@ -72,11 +72,6 @@ onMounted(async () => {
           <option value="THIS_MONTH">This month</option>
           <option value="ALL_TIME">All time</option>
         </select>
-        <select v-model="radar.analyticsMockMode" class="rounded border border-radar-line px-3 py-2 text-sm" @change="radar.loadAnalytics()">
-          <option value="ALL">Mock/demo + real</option>
-          <option value="MOCK_ONLY">Mock/demo only</option>
-          <option value="REAL_ONLY">Real only</option>
-        </select>
         <button class="inline-flex items-center gap-2 rounded border border-radar-line px-3 py-2 text-sm font-semibold" type="button" @click="radar.exportAnalyticsCsv('bought')"><Download class="size-4" /> Bought CSV</button>
         <button class="inline-flex items-center gap-2 rounded border border-radar-line px-3 py-2 text-sm font-semibold" type="button" @click="radar.exportAnalyticsCsv('skipped')"><Download class="size-4" /> Skipped CSV</button>
       </div>
@@ -123,7 +118,7 @@ onMounted(async () => {
           <thead><tr><th>Product</th><th>Store</th><th>Final</th><th>Qty</th><th>Priority</th><th>Date</th></tr></thead>
           <tbody>
             <tr v-for="row in boughtRows.slice(0, 12)" :key="text(row, 'id')">
-              <td><div class="font-medium">{{ text(row, "productName") }}</div><StatusBadge v-if="row.isMockDemo" label="MOCK/DEMO" tone="blue" /></td>
+              <td><div class="font-medium">{{ text(row, "productName") }}</div></td>
               <td>{{ text(row, "storeName") }}</td>
               <td>{{ cents(row, "finalPriceCents") }}</td>
               <td>{{ text(row, "quantity") }}</td>
@@ -140,7 +135,7 @@ onMounted(async () => {
           <thead><tr><th>Product</th><th>Store</th><th>Status</th><th>Reason</th><th>Date</th></tr></thead>
           <tbody>
             <tr v-for="row in skippedRows.slice(0, 12)" :key="`${text(row, 'id')}-${text(row, 'status')}`">
-              <td><div class="font-medium">{{ text(row, "productName") }}</div><StatusBadge v-if="row.isMockDemo" label="MOCK/DEMO" tone="blue" /></td>
+              <td><div class="font-medium">{{ text(row, "productName") }}</div></td>
               <td>{{ text(row, "storeName") }}</td>
               <td><StatusBadge :label="text(row, 'status')" :tone="radar.statusTone(text(row, 'status'))" /></td>
               <td>{{ text(row, "skipReason") }}</td>
@@ -220,7 +215,7 @@ onMounted(async () => {
           <div>Failed: <strong>{{ radar.analytics.alerts.alertsFailed }}</strong></div>
           <div>Suppressed: <strong>{{ radar.analytics.alerts.alertsSuppressed }}</strong></div>
           <div>Discord sent: <strong>{{ radar.analytics.alerts.discordDeliveriesSent }}</strong></div>
-          <div>Mock/demo/test: <strong>{{ radar.analytics.alerts.mockDemoTestAlerts }}</strong></div>
+          <div>Test alerts: <strong>{{ radar.analytics.alerts.mockDemoTestAlerts }}</strong></div>
           <div>Release reminders: <strong>{{ radar.analytics.alerts.releaseReminderAlerts }}</strong></div>
           <div>Unknown MSRP: <strong>{{ radar.analytics.alerts.unknownMsrpAlerts }}</strong></div>
         </div>

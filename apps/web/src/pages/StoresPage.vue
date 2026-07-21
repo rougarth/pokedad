@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ExternalLink, RotateCw, ToggleLeft } from "@lucide/vue";
+import { ExternalLink, ToggleLeft } from "@lucide/vue";
 import StatusBadge from "@/components/StatusBadge.vue";
 import { useRadarStore } from "@/stores/radar";
 
@@ -35,7 +35,6 @@ const radar = useRadarStore();
           <td>
             <div class="flex gap-2">
               <a class="rounded border border-radar-line p-2" :href="store.loginUrl" target="_blank" title="Open store login"><ExternalLink class="size-4" /></a>
-              <button class="rounded border border-radar-line p-2" title="Test session placeholder" type="button" @click="radar.patchStore(store.id, { lastError: 'Demo session test requested. Local helper remains open-only.' } as never)"><RotateCw class="size-4" /></button>
               <button class="rounded border border-radar-line p-2" title="Toggle monitoring" type="button" @click="radar.patchStore(store.id, { monitoringEnabled: !store.monitoringEnabled })"><ToggleLeft class="size-4" /></button>
             </div>
           </td>
