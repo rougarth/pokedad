@@ -16,6 +16,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:remove-mock-data": "tsx prisma/remove-mock-data.ts",
     "db:reset-admin-password": "tsx prisma/reset-admin-password.ts",
+    "discord:send-status": "tsx prisma/send-discord-status.ts",
     "prisma:studio": "prisma studio"
   },
   "dependencies": {

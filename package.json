@@ -16,6 +16,7 @@
     "db:deploy": "npm run db:deploy -w @pokedad-radar/api",
     "db:remove-mock-data": "npm run db:remove-mock-data -w @pokedad-radar/api",
     "db:reset-admin-password": "npm run db:reset-admin-password -w @pokedad-radar/api",
+    "discord:send-status": "npm run discord:send-status -w @pokedad-radar/api",
     "security:check": "node scripts/security-check.mjs",
     "scan:bestbuy:manual": "node scripts/run-manual-bestbuy-scan.mjs"
   },
