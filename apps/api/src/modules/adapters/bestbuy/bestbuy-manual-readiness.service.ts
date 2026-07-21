@@ -21,7 +21,7 @@ export class BestBuyManualReadinessService {
       this.prisma.alertChannel.count({ where: { ownerId, enabled: true, encryptedSecretId: { not: null }, type: { in: ["DISCORD_WEBHOOK", "TELEGRAM"] } } })
     ]);
     const configured = this.adapter.getStatus().configured;
-    const schedulerStopped = !config.scheduledScanEnabled && !schedulerState.active && schedulerState.status === "STOPPED";
+    const schedulerStopped = !config.scheduledScanEnabled && !schedulerState.active;
     const cooldownEndsAt = scanState.nextAllowedScanAt && new Date(scanState.nextAllowedScanAt).getTime() > Date.now() ? scanState.nextAllowedScanAt : undefined;
     const reasons: string[] = [];
     const warnings: string[] = [];

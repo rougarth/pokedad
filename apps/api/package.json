@@ -15,6 +15,7 @@
     "db:migrate": "prisma migrate dev --schema prisma/schema.prisma --name phase3_persistence",
     "db:seed": "tsx prisma/seed.ts",
     "db:remove-mock-data": "tsx prisma/remove-mock-data.ts",
+    "db:reset-admin-password": "tsx prisma/reset-admin-password.ts",
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
